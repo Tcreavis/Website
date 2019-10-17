@@ -1,23 +1,28 @@
-<!DOCTYPE html>
+<!DOCTYPE html>                                         <!--This tells the browser how to read the document. In our case, it's HTML-->
 
-<html>
+<html>                                                  <!--This is just a broad container to say that the following code is HTML-->
 
-    <head>
-        <meta charset = "utf-8">
-        <title>Website</title>
-        <link href="style.css" rel="stylesheet">
-        </title>
+    <head>                                              <!--This is for meta data-->
+
+        <meta charset = "utf-8">                        <!--Charset isn't required, but avoids potential headaches in fringe cases.-->
+        <title>Website</title>                          <!--Title is required. It will apear in browser tabs, favorites bars, and search engines.-->
+        <link href="styles/style.css" rel="stylesheet"> <!--This links our page to a CSS style sheet where the content can be modified.-->
+
     </head>
 
-    <body>
-      <h1>hello</h1>  
-      <p>here's some text</p>
+    <body>                                              <!--Every visible page element will go here.-->
+
+      <h1>hello</h1>                                    <!--Headings go in priority from h1 to h6-->
+      <p>here's some text</p>                           <!--Paragraphs are usually just used to display some text-->
 
       <ul>
-          <li>Students</li>
-          <li>Classes</li>
-          <li>Enrollment</li>
+          <li><a href="pages/students.html">Students</a></li>
+          <li><a href="pages/classes.html">Classes</a></li>
+          <li><a href="pages/enrollment.html">Enrollment</a></li>
       </ul>
+
+      <script src="scripts/main.js"></script>
+
     </body>
 
 </html>
