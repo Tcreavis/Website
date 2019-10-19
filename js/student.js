@@ -104,8 +104,10 @@ function giveDeleteFunction(){
 
         delButtons[x].addEventListener("click", function(){
             
-            deleteStudent(this.id);
-
+            if(window.confirm("Delete Student?")){
+                deleteStudent(this.id);
+            }
+            
         });
     }
 }
@@ -138,6 +140,77 @@ function deleteStudent(id){
 
 }
 
+function giveEditFunction(){
+
+    var editButtons = document.getElementsByClassName("editButton");
+
+    for(var x = 0; x < editButtons.length; x++){
+
+        editButtons[x].addEventListener("click", function(){
+            
+            editStudent(this.id);
+
+        });
+    }
+
+}
+
+function editStudent(id){
+
+    var copyStudentArr = JSON.parse(window.localStorage.getItem("studentArr"));
+
+    var editID = id;
+    var checkThisID;
+    var editIndex = 99;
+
+    for(var x = 0; x < copyStudentArr.length; x++){
+
+        checkThisID = copyStudentArr[x].id;
+
+        if(editID == checkThisID){
+
+            editIndex = x;
+
+        }
+
+    }
+
+    var studentToEdit = copyStudentArr[editIndex];
+
+    newID = window.prompt("Enter new ID:" , studentToEdit.id);
+    newFirst = window.prompt("Enter new First Name:" , studentToEdit.firstName);
+    newLast = window.prompt("Enter new Last Name:" ,  studentToEdit.lastName);
+    newAge = window.prompt("Enter new Age:" , studentToEdit.age);
+    newDegree = window.prompt("Enter new Degree:" , studentToEdit.degree);
+
+    if(newID != null){
+        studentToEdit.id = newID;
+    }
+
+    if(newFirst != null){
+        studentToEdit.firstName = newFirst;
+    }
+
+    if(newLast != null){
+        studentToEdit.lastName = newLast;
+    }
+
+    if(newAge != null){
+        studentToEdit.age = newAge;
+    }
+
+    if(newDegree != null){
+        studentToEdit.degree = newDegree;
+    }
+
+    copyStudentArr[editIndex] = studentToEdit;
+
+    window.localStorage.setItem("studentArr", JSON.stringify(copyStudentArr));
+
+    refreshStudents();
+
+}
+
 
 function refreshStudents(){
 
@@ -154,7 +227,7 @@ function refreshStudents(){
         //If there is an array of students, pull it from storage, parse the data, and place it in a variable.
         var getStudentArr = JSON.parse(window.localStorage.getItem("studentArr"));
         
-        //Go through each object in the array, and use its data to create a new list item.
+        //Go through each object in the array, and use its data to create a new list item with buttons.
         for(var i = 0; i < getStudentArr.length; i++){
             
             //Select the students 'ul' and set it to a variable.
@@ -163,6 +236,7 @@ function refreshStudents(){
             var entry = document.createElement("li");
             //Giving all 'li' elements a common attribute for bulk modification.
             entry.className = "StudentInfo";
+
 
             //Create a delete button for each 'li'
             var delButton = document.createElement("button");
@@ -173,7 +247,8 @@ function refreshStudents(){
             //Give the button a label.
             delButton.innerHTML = "Delete";
 
-            //Create a delete button for each 'li'
+
+            //Create an edit button for each 'li'
             var editButton = document.createElement("button");
             //Again, giving all buttons a common attribute for possible convenience later.
             editButton.className = "editButton";
@@ -181,7 +256,6 @@ function refreshStudents(){
             editButton.id = getStudentArr[i].id;
             //Give the button a label.
             editButton.innerHTML = "Edit";
-
 
 
             //Create a string for each student that lists all of their student info 
@@ -193,15 +267,17 @@ function refreshStudents(){
             //Give each text node a unique ID as well.
             text.iD = getStudentArr[i].id;
 
-            //Append the text and delete button to the 'li'
+            //Append the text, delete, and edit buttons to the 'li'
             entry.appendChild(text);
             entry.appendChild(delButton);
+            entry.appendChild(editButton);
             //Append the 'li' to the 'ul'
             list.appendChild(entry);
 
         }
 
         giveDeleteFunction();
+        giveEditFunction();
 
     }
 
