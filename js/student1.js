@@ -96,17 +96,3 @@ function findStudents(){
 
     }
 }
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
