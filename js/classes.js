@@ -1,54 +1,49 @@
-//Constructor for a student object
-function Student(id, first, last, age, degree){
-    this.id = id; 
-    this.firstName = first;
-    this.lastName = last;
-    this.age = age;
+function Class(id, name, seats, degree){
+    this.id = id;
+    this.name = name;
+    this.seats = seats;
     this.degree = degree;
 }
 
 //Variable to hold student objects.
-var newStudent;
+var newClass;
 
 //Array to hold all student objects.
-var studentArr = [];
+var classArr = [];
 
 //Variables to hold each of our input objects
-var idInput = document.getElementById("studID");
-var firstInput = document.getElementById("firstName");
-var lastInput = document.getElementById("lastName");
-var ageInput = document.getElementById("age");
+var idInput = document.getElementById("classID");
+var nameInput = document.getElementById("className");
+var seatsInput = document.getElementById("seats");
 var degreeInput = document.getElementById("degree");
 
 //Variables to hold the actual values entered into each input object.
-var studentID;
-var studentFirst;
-var studentLast;
-var studentAge;
-var studentDegree;
+var classID;
+var className;
+var classSeats;
+var classDegree;
 
 //Get the most recent list of students from storage.
-refreshStudents();
+refreshClasses();
 
 //Select the submit button, and listen for a click.
 document.getElementById("submitBut").addEventListener("click", function() {
 
     //Initialize each variable with their respective user inputs.
-    studentID = idInput.value;
-    studentFirst = firstInput.value;
-    studentLast = lastInput.value;
-    studentAge = ageInput.value;
-    studentDegree = degreeInput.value;
+    classID = idInput.value;
+    className = nameInput.value;
+    classSeats = seatsInput.value;
+    classDegree = degreeInput.value;
 
     //A boolean to flag if any input fields were left blank.
     var anyBlanks = false;
 
     //An array containing the values of each input element. Used only for input validation.
-    var studentElements = [studentID, studentFirst, studentLast, studentAge, studentDegree];
+    var classElements = [classID, className, classSeats, classDegree];
 
     //If any of the values are empty, set the boolean to true.
-    for(var i = 0; i < studentElements.length; i++){
-        if(!studentElements[i]){
+    for(var i = 0; i < classElements.length; i++){
+        if(!classElements[i]){
             anyBlanks = true;
         }
     } 
@@ -57,36 +52,35 @@ document.getElementById("submitBut").addEventListener("click", function() {
     if(!anyBlanks){
 
         //Create a new student object with the values from the input fields.
-        newStudent = new Student(
-        studentID, 
-        studentFirst, 
-        studentLast, 
-        studentAge, 
-        studentDegree );
+        newClass = new Class(
+            classID, 
+            className, 
+            classSeats, 
+            classDegree, 
+        );
 
         //Clear the user input.
         idInput.value = "";
-        firstInput.value = "";
-        lastInput.value = "";
-        ageInput.value = "";
+        nameInput.value = "";
+        seatsInput.value = "";
         degreeInput.value = "";
 
-        if(window.localStorage.getItem("studentArr")){
+        if(window.localStorage.getItem("classArr")){
 
-            studentArr = JSON.parse(window.localStorage.getItem("studentArr"));
+            classArr = JSON.parse(window.localStorage.getItem("classArr"));
         
         }
 
         //Append the new student to the student array.
-        studentArr.push(newStudent);
+        classArr.push(newClass);
 
         //Add the new student array to local storage, or overwrite the old one.
         //Local storage requires objects and arrays to be "stringified."
         //We can parse them out when we need to.
-        window.localStorage.setItem("studentArr", JSON.stringify(studentArr));
+        window.localStorage.setItem("classArr", JSON.stringify(classArr));
 
         //Add the new student to the page.
-        refreshStudents();
+        refreshClasses();
     }
 
     //Let the user know they left something blank.
@@ -104,25 +98,25 @@ function giveDeleteFunction(){
 
         delButtons[x].addEventListener("click", function(){
             
-            if(window.confirm("Delete Student?")){
-                deleteStudent(this.id);
+            if(window.confirm("Delete Class?")){
+                deleteClass(this.id);
             }
             
         });
     }
 }
 
-function deleteStudent(id){
+function deleteClass(id){
 
-    var copyStudentArr = JSON.parse(window.localStorage.getItem("studentArr"));
+    var copyClassArr = JSON.parse(window.localStorage.getItem("classArr"));
 
     var deletionID = id;
     var checkThisID;
     var deletionIndex = 99;
 
-    for(var x = 0; x < copyStudentArr.length; x++){
+    for(var x = 0; x < copyClassArr.length; x++){
 
-        checkThisID = copyStudentArr[x].id;
+        checkThisID = copyClassArr[x].id;
 
         if(deletionID == checkThisID){
 
@@ -132,11 +126,11 @@ function deleteStudent(id){
 
     }
 
-    copyStudentArr.splice(deletionIndex, deletionIndex+1);
+    copyClassArr.splice(deletionIndex, deletionIndex+1);
 
-    window.localStorage.setItem("studentArr", JSON.stringify(copyStudentArr));
+    window.localStorage.setItem("classArr", JSON.stringify(copyClassArr));
 
-    refreshStudents();
+    refreshClasses();
 
 }
 
@@ -148,24 +142,24 @@ function giveEditFunction(){
 
         editButtons[x].addEventListener("click", function(){
             
-            editStudent(this.id);
+            editClass(this.id);
 
         });
     }
 
 }
 
-function editStudent(id){
+function editClass(id){
 
-    var copyStudentArr = JSON.parse(window.localStorage.getItem("studentArr"));
+    var copyClassArr = JSON.parse(window.localStorage.getItem("classArr"));
 
     var editID = id;
     var checkThisID;
     var editIndex = 99;
 
-    for(var x = 0; x < copyStudentArr.length; x++){
+    for(var x = 0; x < copyClassArr.length; x++){
 
-        checkThisID = copyStudentArr[x].id;
+        checkThisID = copyClassArr[x].id;
 
         if(editID == checkThisID){
 
@@ -175,67 +169,62 @@ function editStudent(id){
 
     }
 
-    var studentToEdit = copyStudentArr[editIndex];
+    var classToEdit = copyClassArr[editIndex];
 
-    newID = window.prompt("Enter new ID:" , studentToEdit.id);
-    newFirst = window.prompt("Enter new First Name:" , studentToEdit.firstName);
-    newLast = window.prompt("Enter new Last Name:" ,  studentToEdit.lastName);
-    newAge = window.prompt("Enter new Age:" , studentToEdit.age);
-    newDegree = window.prompt("Enter new Degree:" , studentToEdit.degree);
+    newID = window.prompt("Enter new Class ID:" , classToEdit.id);
+    newName = window.prompt("Enter new Class Name:" , classToEdit.name);
+    newSeats= window.prompt("Enter new Number of Seats:" , classToEdit.seats);
+    newDegree = window.prompt("Enter new Degree:" , classToEdit.degree);
 
     if(newID != null){
-        studentToEdit.id = newID;
+        classToEdit.id = newID;
     }
 
-    if(newFirst != null){
-        studentToEdit.firstName = newFirst;
+    if(newName != null){
+        classToEdit.name = newName;
     }
 
-    if(newLast != null){
-        studentToEdit.lastName = newLast;
-    }
-
-    if(newAge != null){
-        studentToEdit.age = newAge;
+    if(newSeats != null){
+        classToEdit.seats = newSeats;
     }
 
     if(newDegree != null){
-        studentToEdit.degree = newDegree;
+        classToEdit.degree = newDegree;
     }
 
-    copyStudentArr[editIndex] = studentToEdit;
+    copyClassArr[editIndex] = classToEdit;
 
-    window.localStorage.setItem("studentArr", JSON.stringify(copyStudentArr));
+    window.localStorage.setItem("classArr", JSON.stringify(copyClassArr));
 
-    refreshStudents();
+    refreshClasses();
 
 }
 
 
-function refreshStudents(){
+function refreshClasses(){
 
     //Erase the current student list.
-    if(document.getElementById("studentlist")){
+    if(document.getElementById("classlist")){
 
-        document.getElementById("studentlist").innerHTML = "";
+        document.getElementById("classlist").innerHTML = "";
 
     }
 
     //Check if there is a student array in storage.
-    if(window.localStorage.getItem("studentArr")){
+    if(window.localStorage.getItem("classArr")){
         
         //If there is an array of students, pull it from storage, parse the data, and place it in a variable.
-        var getStudentArr = JSON.parse(window.localStorage.getItem("studentArr"));
+        var getClassArr = JSON.parse(window.localStorage.getItem("classArr"));
         
         //Go through each object in the array, and use its data to create a new list item with buttons.
-        for(var i = 0; i < getStudentArr.length; i++){
+        for(var i = 0; i < getClassArr.length; i++){
             
             //Select the students 'ul' and set it to a variable.
-            var list = document.getElementById("studentlist");
+            var list = document.getElementById("classList");
             //Create a new 'li' element.
             var entry = document.createElement("li");
             //Giving all 'li' elements a common attribute for bulk modification.
-            entry.className = "StudentInfo";
+            entry.className = "ClassInfo";
 
 
             //Create a delete button for each 'li'
@@ -243,7 +232,7 @@ function refreshStudents(){
             //Again, giving all buttons a common attribute for possible convenience later.
             delButton.className = "delButton";
             //Giving all buttons a unique ID that mirrors the Student ID with which they are associated.
-            delButton.id = getStudentArr[i].id;
+            delButton.id = getClassArr[i].id;
             //Give the button a label.
             delButton.innerHTML = "Delete";
 
@@ -253,19 +242,19 @@ function refreshStudents(){
             //Again, giving all buttons a common attribute for possible convenience later.
             editButton.className = "editButton";
             //Giving all buttons a unique ID that mirrors the Student ID with which they are associated.
-            editButton.id = getStudentArr[i].id;
+            editButton.id = getClassArr[i].id;
             //Give the button a label.
             editButton.innerHTML = "Edit";
 
 
             //Create a string for each student that lists all of their student info 
-            var text = document.createTextNode("Name: " + getStudentArr[i].firstName + " " + getStudentArr[i].lastName 
-                                                + ", ID: " + getStudentArr[i].id 
-                                                + ", Age: " + getStudentArr[i].age 
-                                                + ", Major:" + getStudentArr[i].degree + " ")
+            var text = document.createTextNode("Class Name: " + getClassArr[i].name 
+                                                + ", ID: " + getClassArr[i].id 
+                                                + ", Seats: " + getClassArr[i].seats
+                                                + ", Major:" + getClassArr[i].degree + " ")
 
             //Give each text node a unique ID as well.
-            text.iD = getStudentArr[i].id;
+            text.iD = getClassArr[i].id;
 
             //Append the text, delete, and edit buttons to the 'li'
             entry.appendChild(text);
