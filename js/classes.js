@@ -220,7 +220,7 @@ function refreshClasses(){
         for(var i = 0; i < getClassArr.length; i++){
             
             //Select the students 'ul' and set it to a variable.
-            var list = document.getElementById("classList");
+            var list = document.getElementById("classlist");
             //Create a new 'li' element.
             var entry = document.createElement("li");
             //Giving all 'li' elements a common attribute for bulk modification.
