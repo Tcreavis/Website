@@ -1,3 +1,7 @@
+//Much code here is simnilar to that found in the students and classes js files.
+//A thorough explanation of all code is available in the students js file.
+//Comments here are only noting unique elements of the Enrollment page.
+
 //Constructor for enrollment objects
 function Enrollment(enrollmentID, studentID, classID){
     this.enrollmentID = enrollmentID;
@@ -49,24 +53,21 @@ var enrollmentArr = [];
 var studentIDList = document.getElementById("students");
 var classIDList = document.getElementById("classes");
 
-//Variables to hold the actual values selected from each input object.
+//Variables to hold the actual values selected from each input list.
 var newEnrollmentID;
 var newStudentID;
 var newClassID;
 
+//Update the page with the most recent list of enrollments.
 refreshEnrollments();
 
+//Watching for clicks on the submit button.
 document.getElementById("submitBut").addEventListener("click", function() {
-
-    if(window.localStorage.getItem("enrollmentArr")){
-
-        enrollmentArr = JSON.parse(window.localStorage.getItem("enrollmentArr"));
-
-    }
 
     //Initialize each variable with their respective user inputs.
     newStudentID = studentIDList.options[studentIDList.selectedIndex].text;
     newClassID = classIDList.options[classIDList.selectedIndex].text;
+    //Enrollment ID's are made of a combination of the student and class ID's
     newEnrollmentID = newStudentID + "//" + newClassID
 
     //A boolean to flag if any input fields were left blank.
@@ -85,7 +86,7 @@ document.getElementById("submitBut").addEventListener("click", function() {
     //As long as we didn't find any blanks, the following code will execute.
     if(!anyBlanks){
 
-        //Create a new student object with the values from the input fields.
+        //Create a new Enrollment object with the values from the input fields.
         newEnrollment = new Enrollment(
             newEnrollmentID,
             newStudentID,
@@ -96,15 +97,20 @@ document.getElementById("submitBut").addEventListener("click", function() {
         studentIDList.selectedIndex = 0;
         classIDList.selectedIndex = 0;
 
-        //Append the new student to the student array.
+        //Grab the current enrollment array from storage.
+        if(window.localStorage.getItem("enrollmentArr")){
+
+            enrollmentArr = JSON.parse(window.localStorage.getItem("enrollmentArr"));
+    
+        }
+
+        //Append the new enrollment to the enrollments array.
         enrollmentArr.push(newEnrollment);
 
-        //Add the new student array to local storage, or overwrite the old one.
-        //Local storage requires objects and arrays to be "stringified."
-        //We can parse them out when we need to.
+        //Overwrite the array in storage with the newly modifed array.
         window.localStorage.setItem("enrollmentArr", JSON.stringify(enrollmentArr));
 
-        //Add the new student to the page.
+        //Add the new enrollmet to the page.
         refreshEnrollments();
     }
 
@@ -115,6 +121,7 @@ document.getElementById("submitBut").addEventListener("click", function() {
 
 })
 
+//Giving the delete buttons functionality.
 function giveDeleteFunction(){
 
     var delButtons = document.getElementsByClassName("delButton");
@@ -131,6 +138,7 @@ function giveDeleteFunction(){
     }
 }
 
+//When a button is clicked, delete its associate item.
 function deleteEnrollment(id){
 
     var copyEnrollmentArr = JSON.parse(window.localStorage.getItem("enrollmentArr"));
@@ -159,6 +167,7 @@ function deleteEnrollment(id){
 
 }
 
+//Give edit buttons their functionality.
 function giveEditFunction(){
 
     var editButtons = document.getElementsByClassName("editButton");
@@ -174,6 +183,7 @@ function giveEditFunction(){
 
 }
 
+//Prompt the user for new information when an edit buttons is clicked.
 function editEnrollment(id){
 
     var copyEnrollmentArr = JSON.parse(window.localStorage.getItem("enrollmentArr"));
@@ -220,65 +230,44 @@ function editEnrollment(id){
 
 }
 
+//Update the page with the current enrollment objects in the stored array.
 function refreshEnrollments(){
 
-    //Erase the current student list.
     if(document.getElementById("enrollmentlist")){
 
         document.getElementById("enrollmentlist").innerHTML = "";
 
     }
 
-    //Check if there is a student array in storage.
     if(window.localStorage.getItem("enrollmentArr")){
         
-        //If there is an array of students, pull it from storage, parse the data, and place it in a variable.
         var getEnrollmentArr = JSON.parse(window.localStorage.getItem("enrollmentArr"));
         
-        //Go through each object in the array, and use its data to create a new list item with buttons.
         for(var i = 0; i < getEnrollmentArr.length; i++){
             
-            //Select the students 'ul' and set it to a variable.
             var list = document.getElementById("enrollmentlist");
-            //Create a new 'li' element.
             var entry = document.createElement("li");
-            //Giving all 'li' elements a common attribute for bulk modification.
             entry.className = "EnrollmentInfo";
 
-
-            //Create a delete button for each 'li'
             var delButton = document.createElement("button");
-            //Again, giving all buttons a common attribute for possible convenience later.
             delButton.className = "delButton";
-            //Giving all buttons a unique ID that mirrors the Student ID with which they are associated.
             delButton.id = getEnrollmentArr[i].enrollmentID;
-            //Give the button a label.
             delButton.innerHTML = "Delete";
 
-
-            //Create an edit button for each 'li'
             var editButton = document.createElement("button");
-            //Again, giving all buttons a common attribute for possible convenience later.
             editButton.className = "editButton";
-            //Giving all buttons a unique ID that mirrors the Student ID with which they are associated.
             editButton.id = getEnrollmentArr[i].enrollmentID;
-            //Give the button a label.
             editButton.innerHTML = "Edit";
 
-
-            //Create a string for each student that lists all of their student info 
             var text = document.createTextNode("Student: " + getEnrollmentArr[i].studentID 
                                                 + " Is Enrolled In Class : " + getEnrollmentArr[i].classID
                                                 + " [Enrollment ID: " + getEnrollmentArr[i].enrollmentID + "]" )
 
-            //Give each text node a unique ID as well.
             text.iD = getEnrollmentArr[i].enrollmentID;
 
-            //Append the text, delete, and edit buttons to the 'li'
             entry.appendChild(text);
             entry.appendChild(delButton);
             entry.appendChild(editButton);
-            //Append the 'li' to the 'ul'
             list.appendChild(entry);
 
         }
